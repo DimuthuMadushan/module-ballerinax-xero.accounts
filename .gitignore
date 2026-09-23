@@ -53,3 +53,6 @@ build
 
 # Ignore Docker env file
 docker.env
+
+# Example packages resolve the connector locally; their lock files are not committed
+examples/*/Dependencies.toml

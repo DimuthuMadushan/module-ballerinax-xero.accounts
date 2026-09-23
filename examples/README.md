@@ -2,13 +2,25 @@
 
 The `ballerinax/xero.accounts` connector provides practical examples illustrating usage in various scenarios.
 
-[//]: # (TODO: Add examples)
-1. 
-2. 
+| Example | Description |
+|---------|-------------|
+| [`customer_invoice_billing`](./customer_invoice_billing/customer_invoice_billing.md) | Onboards a new customer and bills them. |
+| [`invoice_payment_recording`](./invoice_payment_recording/invoice_payment_recording.md) | Records a customer payment against an existing sales invoice. |
+| [`supplier_batch_payment_run`](./supplier_batch_payment_run/supplier_batch_payment_run.md) | Pays all of a supplier's outstanding bills in a single bank transaction. |
+| [`financial_reports_overview`](./financial_reports_overview/financial_reports_overview.md) | Prints an organisation's month-end position. |
 
 ## Prerequisites
 
-[//]: # (TODO: Add prerequisites)
+1. Complete the [setup guide](../ballerina/README.md#setup-guide) to obtain a client ID, client secret, refresh token and tenant ID.
+
+2. For each example, create a `Config.toml` in the example directory with the required credentials and the example-specific values listed in its document:
+   ```toml
+   clientId = "<CLIENT_ID>"
+   clientSecret = "<CLIENT_SECRET>"
+   refreshToken = "<REFRESH_TOKEN>"
+   refreshUrl = "https://identity.xero.com/connect/token"
+   tenantId = "<TENANT_ID>"
+   ```
 
 ## Running an example
 

@@ -1,16 +1,13 @@
 [package]
-distribution = "2201.12.0"
+distribution = "2201.13.4"
 org = "ballerinax"
 name = "xero.accounts"
 version = "@toml.version@"
 license = ["Apache-2.0"]
 authors = ["Ballerina"]
-keywords = [] # TODO: Add keywords
-# icon = "icon.png" # TODO: Add icon
+keywords = ["Vendor/Xero", "Area/Finance & Accounting", "Type/Connector"]
+icon = "icon.png"
 repository = "https://github.com/ballerina-platform/module-ballerinax-xero.accounts"
 
 [build-options]
 observabilityIncluded = true
-
-[platform.java21]
-graalvmCompatible = true
