@@ -16,8 +16,47 @@
 
 import ballerina/data.jsondata;
 import ballerina/http;
+import ballerina/uuid;
 
 listener http:Listener ep0 = new (9090);
+
+// Contacts the mock knows about, keyed by both ContactID and ContactNumber so that
+// `GET /Contacts/{identifier}` serves getContact and getContactByContactNumber alike.
+// Seeded with the contacts `GET /Contacts` lists; `PUT /Contacts` adds to it.
+isolated map<Contact> contactStore = seedContacts();
+
+isolated function seedContacts() returns map<Contact> {
+    Contact[] seed = [
+        {
+            contactID: "bd2270c3-8706-4c11-9cfb-000b551c3f51",
+            contactNumber: "SB2",
+            name: "ABC Limited",
+            emailAddress: "a.dutchess@abclimited.com",
+            contactStatus: "ACTIVE",
+            addresses: [{addressType: "STREET", addressLine1: "18 Main Street", city: "Wellington", postalCode: "6011", country: "New Zealand"}],
+            phones: [{phoneType: "DEFAULT", phoneNumber: "4912345", phoneAreaCode: "04", phoneCountryCode: "64"}],
+            isCustomer: true,
+            isSupplier: false
+        },
+        {contactID: "8138a266-fb42-49b2-a104-014b7045753d", contactNumber: "SB3", name: "Boom FM", emailAddress: "accounts@boomfm.com", contactStatus: "ACTIVE", isCustomer: true, isSupplier: true}
+    ];
+    map<Contact> store = {};
+    foreach Contact contact in seed {
+        store[contact.contactID ?: ""] = contact;
+        store[contact.contactNumber ?: ""] = contact;
+    }
+    return store;
+}
+
+isolated function storeContact(Contact contact) {
+    lock {
+        foreach string? key in [contact.contactID, contact.contactNumber] {
+            if key is string {
+                contactStore[key] = contact.clone();
+            }
+        }
+    }
+}
 
 service / on ep0 {
     # Deletes a chart of accounts
@@ -165,21 +204,13 @@ service / on ep0 {
     # + contactID - Unique identifier for a Contact
     # + return - Success - return response of type Contacts array with a unique Contact 
     resource function get Contacts/[string contactID](@http:Header {name: "xero-tenant-id"} string xeroTenantId) returns Contacts {
-        return {
-            contacts: [
-                {
-                    contactID: "bd2270c3-8706-4c11-9cfb-000b551c3f51",
-                    contactNumber: "SB2",
-                    name: "ABC Limited",
-                    emailAddress: "a.dutchess@abclimited.com",
-                    contactStatus: "ACTIVE",
-                    addresses: [{addressType: "STREET", addressLine1: "18 Main Street", city: "Wellington", postalCode: "6011", country: "New Zealand"}],
-                    phones: [{phoneType: "DEFAULT", phoneNumber: "4912345", phoneAreaCode: "04", phoneCountryCode: "64"}],
-                    isCustomer: true,
-                    isSupplier: false
-                }
-            ]
-        };
+        lock {
+            Contact? contact = contactStore[contactID];
+            if contact is () {
+                return {contacts: []};
+            }
+            return {contacts: [contact.clone()]};
+        }
     }
 
     # Retrieves sales invoices or purchase bills
@@ -539,8 +570,9 @@ service / on ep0 {
         Contact[] created = [];
         foreach Contact c in payload.contacts ?: [] {
             Contact contact = c.clone();
-            contact.contactID = "3e776c4b-ea9e-4bb1-96be-6b0c7a71a37f";
+            contact.contactID = uuid:createType4AsString();
             contact.contactStatus = "ACTIVE";
+            storeContact(contact);
             created.push(contact);
         }
         return {contacts: created};

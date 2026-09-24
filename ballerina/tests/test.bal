@@ -114,7 +114,9 @@ isolated function testGetContacts() returns error? {
 isolated function testGetContact() returns error? {
     string contactId = check firstContactId();
     Contacts response = check xero->getContact(contactId, {xeroTenantId: tenantId});
-    test:assertEquals((response.contacts ?: []).length(), 1);
+    Contact[] contacts = response.contacts ?: [];
+    test:assertEquals(contacts.length(), 1);
+    test:assertEquals(contacts[0].contactID, contactId);
 }
 
 @test:Config {groups: ["live_tests", "mock_tests"]}
@@ -125,7 +127,8 @@ isolated function testGetContactByContactNumber() returns error? {
     Contacts response = check xero->getContactByContactNumber(contactNumber, {xeroTenantId: tenantId});
     Contact[] contacts = response.contacts ?: [];
     test:assertEquals(contacts.length(), 1);
-    test:assertTrue(contacts[0].contactID is string);
+    test:assertEquals(contacts[0].contactNumber, contactNumber);
+    test:assertEquals(contacts[0].contactID, (created.contacts ?: [])[0].contactID);
 }
 
 @test:Config {groups: ["live_tests", "mock_tests"]}

@@ -28,6 +28,8 @@ configurable string tenantId = ?;
 configurable string invoiceId = ?;
 configurable string bankAccountCode = ?;
 configurable decimal paymentAmount = ?;
+// Date the payment was received, in YYYY-MM-DD format.
+configurable string paymentDate = ?;
 
 public function main() returns error? {
     accounts:Client xero = check new ({
@@ -38,7 +40,7 @@ public function main() returns error? {
     accounts:Payments created = check xero->createPayment({xeroTenantId: tenantId}, {
         invoice: {invoiceID: invoiceId},
         account: {code: bankAccountCode},
-        date: "2026-09-23",
+        date: paymentDate,
         amount: paymentAmount,
         reference: "Customer remittance"
     });

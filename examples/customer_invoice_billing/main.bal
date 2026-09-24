@@ -14,8 +14,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-// Onboards a new customer, raises an approved sales invoice for them, emails it and
-// reads it back to confirm the amount due.
+// Onboards a new customer, raises an approved sales invoice for them, optionally emails
+// it, and reads it back to confirm the amount due.
 
 import ballerina/io;
 import ballerinax/xero.accounts;
@@ -26,6 +26,14 @@ configurable string refreshToken = ?;
 configurable string refreshUrl = ?;
 configurable string tenantId = ?;
 configurable string salesAccountCode = "200";
+// The customer's billing email address. Xero sends the invoice here when sendEmail is true.
+configurable string customerEmail = ?;
+// Invoice and due dates, in YYYY-MM-DD format.
+configurable string invoiceDate = ?;
+configurable string dueDate = ?;
+// Emailing is off by default: Xero sends a real email, and it succeeds only for an
+// organisation that Xero permits to send email, which a demo company may not be.
+configurable boolean sendEmail = false;
 
 public function main() returns error? {
     accounts:Client xero = check new ({
@@ -39,7 +47,7 @@ public function main() returns error? {
                 name: "Ridgeway University",
                 firstName: "Jordan",
                 lastName: "Reyes",
-                emailAddress: "accounts@ridgeway.example.com",
+                emailAddress: customerEmail,
                 isCustomer: true
             }
         ]
@@ -57,8 +65,8 @@ public function main() returns error? {
             {
                 'type: "ACCREC",
                 contact: {contactID: contactId},
-                date: "2026-09-01",
-                dueDate: "2026-09-30",
+                date: invoiceDate,
+                dueDate,
                 reference: "Semester workshop",
                 status: "AUTHORISED",
                 lineAmountTypes: "Exclusive",
@@ -75,9 +83,13 @@ public function main() returns error? {
     string invoiceId = check createdInvoices[0].invoiceID.ensureType();
     io:println("Raised invoice ", createdInvoices[0].invoiceNumber, " (", invoiceId, ")");
 
-    // Step 3: email the invoice to the contact.
-    check xero->emailInvoice(invoiceId, {xeroTenantId: tenantId}, {});
-    io:println("Emailed the invoice to the customer");
+    // Step 3: email the invoice to the contact, when enabled.
+    if sendEmail {
+        check xero->emailInvoice(invoiceId, {xeroTenantId: tenantId}, {});
+        io:println("Emailed the invoice to ", customerEmail);
+    } else {
+        io:println("Skipped emailing the invoice; set sendEmail = true to send it");
+    }
 
     // Step 4: read the invoice back to confirm what is owed.
     accounts:Invoices fetched = check xero->getInvoice(invoiceId, {xeroTenantId: tenantId});

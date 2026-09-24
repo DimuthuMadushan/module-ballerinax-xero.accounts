@@ -1,10 +1,9 @@
 # Customer invoice billing
 
-This example onboards a new customer and bills them. It creates the customer contact, raises an approved sales invoice against it, emails the invoice to the customer through Xero and reads it back to confirm the total and the amount due.
+This example onboards a new customer and bills them. It creates the customer contact, raises an approved sales invoice against it, optionally emails the invoice to the customer through Xero, and reads it back to confirm the total and the amount due.
 
 ## Prerequisites
 
-- Ballerina Swan Lake 2201.13.4 or later
 - A Xero app, refresh token and tenant ID, as described in the [setup guide](../../ballerina/README.md#setup-guide)
 - Push the connector to the local repository:
   ```bash
@@ -19,6 +18,12 @@ This example onboards a new customer and bills them. It creates the customer con
   refreshUrl = "https://identity.xero.com/connect/token"
   tenantId = "<TENANT_ID>"
   salesAccountCode = "200"
+  # Replace with the customer's real billing address before enabling sendEmail.
+  customerEmail = "<CUSTOMER_EMAIL>"
+  invoiceDate = "<YYYY-MM-DD>"
+  dueDate = "<YYYY-MM-DD>"
+  # Sends a real email; needs an organisation that Xero permits to send email.
+  sendEmail = false
   ```
 
 ## Run the example

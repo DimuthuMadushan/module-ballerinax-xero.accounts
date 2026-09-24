@@ -24,7 +24,7 @@ Version 2.0.0 is regenerated from the current Xero Accounting API specification 
 
 To use the connector you need a Xero account, an app registered in the Xero developer portal, an OAuth 2.0 refresh token and the ID of the organisation (tenant) to work with.
 
-1. Sign up for a [Xero account](https://www.xero.com/signup/) if you do not already have one. A free [demo company](https://central.xero.com/s/article/Use-the-demo-company) is enough for development.
+1. Sign up for a [Xero account](https://www.xero.com/signup/) if you do not already have one. A free [demo company](https://central.xero.com/s/article/Use-the-demo-company) is enough for development, except for emailing invoices: the `emailInvoice` operation, and the email step of the customer invoice billing example, need an organisation that Xero permits to send email.
 
 2. Sign in to the [Xero developer portal](https://developer.xero.com/app/manage) and select **New app**. Choose the **Web app** integration type, enter an app name, a company or application URL, and a redirect URI such as `http://localhost:8080/callback`, then create the app.
 
@@ -114,7 +114,7 @@ bal run
 
 The Xero Accounts connector provides practical examples illustrating usage in various scenarios. Explore these [examples](https://github.com/ballerina-platform/module-ballerinax-xero.accounts/tree/main/examples/), covering the following use cases:
 
-1. [Customer invoice billing](examples/customer_invoice_billing/customer_invoice_billing.md) - Creates a customer contact, raises an approved sales invoice, emails it and checks the amount due.
+1. [Customer invoice billing](examples/customer_invoice_billing/customer_invoice_billing.md) - Creates a customer contact, raises an approved sales invoice, optionally emails it and checks the amount due.
 2. [Invoice payment recording](examples/invoice_payment_recording/invoice_payment_recording.md) - Records a payment against a sales invoice, attaches a remittance note and prints the payment's audit history.
 3. [Supplier batch payment run](examples/supplier_batch_payment_run/supplier_batch_payment_run.md) - Pays all of a supplier's outstanding bills in one bank transaction with a batch payment.
 4. [Financial reports overview](examples/financial_reports_overview/financial_reports_overview.md) - Prints the month's profit and loss, the balance sheet and the trial balance for an organisation.

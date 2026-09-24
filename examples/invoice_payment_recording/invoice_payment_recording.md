@@ -4,7 +4,6 @@ This example records a customer payment against an existing sales invoice. It pa
 
 ## Prerequisites
 
-- Ballerina Swan Lake 2201.13.4 or later
 - A Xero app, refresh token and tenant ID, as described in the [setup guide](../../ballerina/README.md#setup-guide)
 - Push the connector to the local repository:
   ```bash
@@ -21,6 +20,7 @@ This example records a customer payment against an existing sales invoice. It pa
   invoiceId = "<INVOICE_ID>"
   bankAccountCode = "<BANK_ACCOUNT_CODE>"
   paymentAmount = 100.00
+  paymentDate = "<YYYY-MM-DD>"
   ```
 
 ## Run the example

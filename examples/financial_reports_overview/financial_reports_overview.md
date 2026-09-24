@@ -4,7 +4,6 @@ This example prints an organisation's month-end position. It identifies the orga
 
 ## Prerequisites
 
-- Ballerina Swan Lake 2201.13.4 or later
 - A Xero app, refresh token and tenant ID, as described in the [setup guide](../../ballerina/README.md#setup-guide)
 - Push the connector to the local repository:
   ```bash
